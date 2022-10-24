@@ -2,8 +2,9 @@ package com.github.javacodekata.lambda.stream;
 
 import com.google.common.collect.ImmutableList;
 
-import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -25,7 +26,9 @@ public class ListTransformer {
 	 * @return The sorted values in ascending ASCII order.
 	 */
 	public List<String> getSortedStrings() {
-		return values;
+		return values.stream()
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -38,7 +41,11 @@ public class ListTransformer {
 	 * @return
 	 */
 	public List<Integer> getSortedIntegers() {
-		return new LinkedList<>();
+		return values.stream()
+				.filter(ListTransformer::isNumeric)
+				.map(Integer::valueOf)
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -51,7 +58,25 @@ public class ListTransformer {
 	 * @return
 	 */
 	public List<Integer> getSortedDescendingIntegers() {
-		return new LinkedList<>();
+		return values.stream()
+				.filter(ListTransformer::isNumeric)
+				.map(Integer::valueOf)
+				.sorted(Comparator.reverseOrder())
+				.collect(Collectors.toList());
+	}
+
+	private static boolean isNumeric(String strNum) {
+
+		if (strNum == null) {
+			return false;
+		}
+
+		try {
+			Integer.parseInt(strNum);
+			return true;
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
 	}
 
 }
